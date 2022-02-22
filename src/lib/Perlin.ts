@@ -27,6 +27,22 @@ export class Perlin {
         }
     }
 
+    public noise1d(p: number): number {
+        // https://gpfault.net/posts/perlin-noise.txt.html
+        const p0 = Math.floor(p);
+        const p1 = p0 + 1;
+        return (1 - this.fade(p-p0)) * this.g(p0) * (p-p0) + this.fade(p-p0) * this.g(p1) *(p-p1);
+    }
+
+    private g(p:number): number{
+
+        return this.permutation[p%255] > 128 ? 1 : -1;
+    }
+
+
+
+
+
     public noise(x: number, y: number, z: number): number {  
         
         let xi = Math.floor(x) & 255;
