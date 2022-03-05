@@ -4,6 +4,8 @@
 // https://adrianb.io/2014/08/09/perlinnoise.html
 // https://gpfault.net/posts/perlin-noise.txt.html
 
+import { map } from "./Map";
+
 
 export class Perlin {
 
@@ -48,31 +50,49 @@ export class Perlin {
 
 
     public noiseN(...p:number[]): number {
-        // Find lattice points (points surrounding p).
-        const p0 = p.map(i => Math.floor(i));
-        const p1 = p0.map(i => i + 1);
+       const lp = this.latticePoints(p);
 
-        const latticePoints = [];
-        for (let i = 0; i < Math.pow(2, p.length); i++)
-        {
-               
-        }
-
-        // x = {0, 1}
-        // y = {0, 1} 
-        // y = {0, 1}
-        // lattice points = 000 001 010 011 100 101 110 111
-        // where 0 is floor(pi) and 1 is (floor(pi) + 1)
-        
         return this.gradientN(p);
     }
 
     private gradientN(p: number[]): number {
-        return p.map(i => this.permutation[i%255]).reduce((a,b) => a + b, 0) > 128 ? 1 : -1;
+        return p
+            .map(i => this.permutation[i%255])
+            .reduce((a,b) => a + b, 0) > 128 ? 1 : -1;
     }
 
+    private latticePoints(p: number[]): number[][]{
+        // x = {0, 1}
+        // y = {0, 1} 
+        // z = {0, 1}
+        // lattice points = 000 001 010 011 100 101 110 111
+        // where 0 is floor(Pi) and 1 is (floor(Pi) + 1)
 
+        // x = {0, 1}
+        // y = {0, 1}
+        // lattice points = 00 01 10 11
 
+        // Find lattice points (points surrounding p).
+        let n = p.length;
+        const latticePoints: number[][] = [];
+        
+        for (let i = 0; i < Math.pow(2,n); i++) {
+            let bin = this.dec2bin(i);
+            let point = [];
+            for (let j = 0; j < bin.length; j++) {
+                point.push(bin[j] == 0 ? Math.floor(p[j]) : Math.floor(p[j]) + 1);
+            }
+            latticePoints.push(point);
+        }
+
+        console.log('latticePoints', latticePoints);
+
+        return latticePoints;
+    }
+
+    private dec2bin(i:number) {
+        return (i >>> 0).toString(2).split('').map(i => parseInt(i));
+    }
 
 
     public noise(x: number, y: number, z: number): number {  

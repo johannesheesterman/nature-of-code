@@ -26,18 +26,19 @@ let perlin = new Perlin();
 
 
 
+let value = perlin.noiseN(20.5, 21.5) * 255;
 
-var imgData = ctx.createImageData(WIDTH, HEIGHT);
-for (let y = 0; y < HEIGHT; y++){
-    for (let x = 0; x < WIDTH; x++){
-        let value = perlin.noiseN(x,y) * 255;
-        if (value < 0) value = 0;
+// var imgData = ctx.createImageData(WIDTH, HEIGHT);
+// for (let y = 0; y < HEIGHT; y++){
+//     for (let x = 0; x < WIDTH; x++){
+//         let value = perlin.noiseN(x,y) * 255;
+//         if (value < 0) value = 0;
         
-        imgData.data[(x + y * WIDTH) * 4 + 0] = value;
-        imgData.data[(x + y * WIDTH) * 4 + 1] = value;
-        imgData.data[(x + y * WIDTH) * 4 + 2] = value;
-        imgData.data[(x + y * WIDTH) * 4 + 3] = 255;
-    }
-}
+//         imgData.data[(x + y * WIDTH) * 4 + 0] = value;
+//         imgData.data[(x + y * WIDTH) * 4 + 1] = value;
+//         imgData.data[(x + y * WIDTH) * 4 + 2] = value;
+//         imgData.data[(x + y * WIDTH) * 4 + 3] = 255;
+//     }
+// }
 
-ctx.putImageData(imgData, 0, 0);
+// ctx.putImageData(imgData, 0, 0);
