@@ -2,6 +2,8 @@
 // Understanding Perlin Noise: 
 // https://mrl.cs.nyu.edu/~perlin/noise/
 // https://adrianb.io/2014/08/09/perlinnoise.html
+// https://gpfault.net/posts/perlin-noise.txt.html
+
 
 export class Perlin {
 
@@ -28,15 +30,45 @@ export class Perlin {
     }
 
     public noise1d(p: number): number {
-        // https://gpfault.net/posts/perlin-noise.txt.html
+        // Points surrounding p.
         const p0 = Math.floor(p);
         const p1 = p0 + 1;
-        return (1 - this.fade(p-p0)) * this.g(p0) * (p-p0) + this.fade(p-p0) * this.g(p1) *(p-p1);
+
+        const a = this.gradient(p0) * (p-p0);
+        const b = this.gradient(p1) * (p-p1);
+        const f = this.fade(p-p0);
+
+        //return (1 - f) * a + f * b;
+        return this.lerp(a, b, f);
     }
 
-    private g(p:number): number{
-
+    private gradient(p:number): number{
         return this.permutation[p%255] > 128 ? 1 : -1;
+    }
+
+
+    public noiseN(...p:number[]): number {
+        // Find lattice points (points surrounding p).
+        const p0 = p.map(i => Math.floor(i));
+        const p1 = p0.map(i => i + 1);
+
+        const latticePoints = [];
+        for (let i = 0; i < Math.pow(2, p.length); i++)
+        {
+               
+        }
+
+        // x = {0, 1}
+        // y = {0, 1} 
+        // y = {0, 1}
+        // lattice points = 000 001 010 011 100 101 110 111
+        // where 0 is floor(pi) and 1 is (floor(pi) + 1)
+        
+        return this.gradientN(p);
+    }
+
+    private gradientN(p: number[]): number {
+        return p.map(i => this.permutation[i%255]).reduce((a,b) => a + b, 0) > 128 ? 1 : -1;
     }
 
 
@@ -93,7 +125,7 @@ export class Perlin {
     }
 
     private lerp(a: number, b: number, x: number): number {
-        return a + x * (b - a);
+        return a + (b - a) * x;
     }
 
     private grad(hash: number, x: number, y: number, z: number): number {
